@@ -1,22 +1,11 @@
 const app = {
-	// tags: ({
 	player: document.querySelector(`.player`),
-	// 	video: this.player.querySelector(`.viewer`),
-	// 	progress: app.tags.player.querySelector(`.progress`),
-	// 	progressBar: player.querySelector(`.progress__filled`),
-	// 	toggle: player.querySelector(`.toggle`),
-	// 	ranges: player.querySelector(`.player__slider`),
-	// 	skipButtons: player.querySelector(`[data-skip]`),
-	// 	init() {
-	// 		return this;
-	// 	},
-	// }).init(),
 
 	playListener() {
 		const video = app.player.querySelector(`.viewer`);
-		const toggle = app.player.querySelector(`.toggle`);
+		const toggleplay = app.player.querySelector(`.togglePlay`);
 
-		[video, toggle].forEach((div)=> {
+		[video, toggleplay].forEach((div)=> {
 			div.addEventListener(`click`, app.togglePlayPause);
 		});
 
@@ -35,13 +24,13 @@ const app = {
 
 	togglePlayPauseButton() {
 		const video = app.player.querySelector(`.viewer`);
-		const toggle = app.player.querySelector(`.toggle`);
+		const togglePlay = app.player.querySelector(`.togglePlay`);
 
 		const icon = video.paused
-			? `►`
-			: `❚❚`;
+			? `<i class="fa fa-play" aria-hidden="true"></i>`
+			: `<i class="fa fa-pause" aria-hidden="true"></i>`;
 
-		toggle.textContent = icon;
+		togglePlay.innerHTML = icon;
 	},
 
 	skipListener() {
@@ -91,37 +80,58 @@ const app = {
 
 	scrubListener() {
 		const progress = app.player.querySelector(`.progress`);
-		let mousedown = false;
+		let isMousedown = false;
 
 		progress.addEventListener(`click`, app.scrub);
 
 		[`mousedown`, `mouseup`, `touchstart`, `touchend`].forEach((e)=> {
-			progress.addEventListener(e, ()=> mousedown = !mousedown);
+			progress.addEventListener(e, ()=> isMousedown = !isMousedown);
 		});
 
-		// progress.addEventListener(`mousemove`, (e)=> mousedown && app.scrub(e));
-		[`mousemove`, `touchmove`].forEach((e)=> {
-			progress.addEventListener(e, (evt)=> mousedown && app.scrub(evt));
+		[`mousemove`, `touchmove`].forEach((evt)=> {
+			progress.addEventListener(evt, (e)=> isMousedown && app.scrub(e));
 		});
 	},
 
 	scrub(e) {
 		const video = app.player.querySelector(`.viewer`);
 		const progress = app.player.querySelector(`.progress`);
-		const left = e.targetTouches[0].clientX - progress.getBoundingClientRect().left;
-		
-		console.log(e);
-		console.log(e.targetTouches[0].clientX);
-		console.log(progress.getBoundingClientRect().left);
-		console.log(left);
+		const left = e.touches
+			? Math.round(e.touches[0].clientX - progress.getBoundingClientRect().left)
+			: null;
+		const scrubTime = e.touches
+			? Math.round((left / progress.offsetWidth) * video.duration)
+			: (e.offsetX / progress.offsetWidth) * video.duration;
 
-		// const scrubTime = e.touches
-		// 	? Math.round((left / progress.offsetWidth) * video.duration)
-		// 	: (e.offsetX / progress.offsetWidth) * video.duration;
+		video.currentTime = scrubTime;
+	},
 
-		// video.currentTime = scrubTime;
-		// console.log(e);
-		// console.log(scrubTime);
+	fullscreenListener() {
+		const toggleScreen = app.player.querySelector(`.toggleFull`);
+
+		toggleScreen.addEventListener(`click`, app.toggleFullscreen);
+	},
+
+	toggleFullscreen() {
+		if (app.player.style.flex === `1 1 auto`) {
+			app.player.style.flex = ``;
+			app.player.style.maxWidth = `750px`;
+		} else {
+			app.player.style.flex = `1 1 auto`;
+			app.player.style.maxWidth = ``;
+		}
+
+		app.toggleFullscreenButton();
+	},
+
+	toggleFullscreenButton() {
+		const toggleScreen = app.player.querySelector(`.toggleFull`);
+
+		const icon = app.player.style.flex === `1 1 auto`
+			? `<i class="fa fa-compress" aria-hidden="true"></i>`
+			: `<i class="fa fa-arrows-alt" aria-hidden="true"></i>`;
+
+		toggleScreen.innerHTML = icon;
 	},
 
 	onloadFunction() {
@@ -130,6 +140,7 @@ const app = {
 		app.rangeListener();
 		app.progressListener();
 		app.scrubListener();
+		app.fullscreenListener();
 	},
 };
 
