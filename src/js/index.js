@@ -57,42 +57,20 @@ const app = {
 		});
 	},
 
-	setRangeVal() {
-		const ranges = app.player.querySelectorAll(`.player__slider`);
-		const volume = app.player.querySelector(`.player__slider[name="volume"]`);
-		const playbackRate = app.player.querySelector(`.player__slider[name="playbackRate"]`);
-
-		function padVal(val, elem) {
-			if (ranges[0]~) {
-				return val > 0.09
-					? (val * 100).toFixed()
-					: `0${(val * 100).toFixed()}`;
-			}
-
-			return val > 0.9
-				? (val * 10).toFixed(0)
-				: `0${(val * 10).toFixed(0)}`;
-		}
-
-		// [0.5, 1].forEach((val, index)=> {
-		// 	ranges[index].setAttribute(`value`, `${padVal(val)}`);
-		// 	console.log(val);
-		// 	alert(val);
-		// // });
-
-		[0.5, 1].forEach((val, index, elem)=> {
-			ranges[index].style.content = `${padVal(val, elem)}`;
-		});
-	},
-
 	updateRange() {
 		const video = app.player.querySelector(`.viewer`);
+		let padVal;
 
-		const padVal = this.value > 9
-			? parseFloat(this.value).toFixed(1)
-			: `0${parseFloat(this.value).toFixed(1)}`;
+		if(this.name === `volume`) {
+			padVal = this.value > 9
+				? parseFloat(this.value).toFixed()
+				: `0${parseFloat(this.value).toFixed()}`;
+			video[this.name] = this.value / 100;
+		} else {
+			padVal = parseFloat(this.value).toFixed(1);
+			video[this.name] = this.value;
+		}
 
-		video[this.name] = this.value / 100;
 		this.setAttribute(`value`, `${padVal}`);
 	},
 
@@ -208,7 +186,6 @@ const app = {
 		app.playListener();
 		app.skipListener();
 		app.rangeListener();
-		app.setRangeVal();
 		app.progressListener();
 		app.scrubListener();
 		app.largeScreenListener();
