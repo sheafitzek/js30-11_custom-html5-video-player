@@ -26,10 +26,11 @@ body {
 
 .player {
 	// max-width:750px;
+	display: flex;
 	border:5px solid rgba(0,0,0,0.2);
 	box-shadow:0 0 20px rgba(0,0,0,0.2);
 	position: relative;
-	font-size: 0;
+	// font-size: 0;
 	overflow: hidden;
 }
 
@@ -65,6 +66,49 @@ body {
 	border-color: #ffc600;
 }
 
+.player__slider[name="volume"]:before {
+	content: "\f028";
+	font-family: fontAwesome;
+	color: #ffc600;
+	position: relative;
+	left: -5px;
+	top: 6px;
+	vertical-align: middle;
+	text-shadow: 1px 1px 1px black;
+}
+
+.player__slider[name="volume"]:after {
+	content: attr(value);
+	color: #ffc600;
+	position: relative;
+	right: -5px;
+	top: 6px;
+	vertical-align: middle;
+	text-shadow: 1px 1px 1px black;
+	padding-right: 15px;
+}
+
+.player__slider[name="playbackRate"]:before {
+	content: "\f0e4";
+	font-family: fontAwesome;
+	color: #ffc600;
+	position: relative;
+	left: -5px;
+	top: 6px;
+	vertical-align: middle;
+	text-shadow: 1px 1px 1px black;
+}
+
+.player__slider[name="playbackRate"]:after {
+	content: attr(value);
+	color: #ffc600;
+	position: relative;
+	right: -5px;
+	top: 6px;
+	vertical-align: middle;
+	text-shadow: 1px 1px 1px black;
+}
+
 .player__slider {
 	width:10px;
 	height:30px;
@@ -75,7 +119,7 @@ body {
 	position: absolute;
 	bottom:0;
 	width: 100%;
-	transform: translateY(100%) translateY(-5px);
+	// transform: translateY(100%) translateY(-5px);
 	transition:all .3s;
 	flex-wrap:wrap;
 	background:rgba(0,0,0,0.1);
@@ -104,9 +148,19 @@ body {
 	cursor:ew-resize;
 }
 
+.progress__time {
+	position: absolute;
+	font-size: 12px;
+	color: white;
+	background: transparent;
+	text-align: center;
+	left: 0;
+	right: 0;
+}
+
 .progress__filled {
 	width:50%;
-	background:#ffc600;
+	background:#01a1eb;
 	flex:0;
 	flex-basis:0%;
 }
@@ -135,7 +189,7 @@ input[type=range]::-webkit-slider-thumb {
 	height: 15px;
 	width: 15px;
 	border-radius: 50px;
-	background: #ffc600;
+	background: #01a1eb;
 	cursor: pointer;
 	-webkit-appearance: none;
 	margin-top: -3.5px;
@@ -158,6 +212,6 @@ input[type=range]::-moz-range-thumb {
 	height: 15px;
 	width: 15px;
 	border-radius: 50px;
-	background: #ffc600;
+	background: #01a1eb;
 	cursor: pointer;
 }

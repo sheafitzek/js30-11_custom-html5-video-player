@@ -57,10 +57,43 @@ const app = {
 		});
 	},
 
+	setRangeVal() {
+		const ranges = app.player.querySelectorAll(`.player__slider`);
+		const volume = app.player.querySelector(`.player__slider[name="volume"]`);
+		const playbackRate = app.player.querySelector(`.player__slider[name="playbackRate"]`);
+
+		function padVal(val, elem) {
+			if (ranges[0]~) {
+				return val > 0.09
+					? (val * 100).toFixed()
+					: `0${(val * 100).toFixed()}`;
+			}
+
+			return val > 0.9
+				? (val * 10).toFixed(0)
+				: `0${(val * 10).toFixed(0)}`;
+		}
+
+		// [0.5, 1].forEach((val, index)=> {
+		// 	ranges[index].setAttribute(`value`, `${padVal(val)}`);
+		// 	console.log(val);
+		// 	alert(val);
+		// // });
+
+		[0.5, 1].forEach((val, index, elem)=> {
+			ranges[index].style.content = `${padVal(val, elem)}`;
+		});
+	},
+
 	updateRange() {
 		const video = app.player.querySelector(`.viewer`);
 
-		video[this.name] = this.value;
+		const padVal = this.value > 9
+			? parseFloat(this.value).toFixed(1)
+			: `0${parseFloat(this.value).toFixed(1)}`;
+
+		video[this.name] = this.value / 100;
+		this.setAttribute(`value`, `${padVal}`);
 	},
 
 	progressListener() {
@@ -106,18 +139,55 @@ const app = {
 		video.currentTime = scrubTime;
 	},
 
-	fullscreenListener() {
-		const toggleScreen = app.player.querySelector(`.toggleFull`);
+	largeScreenListener() {
+		const toggleLargeScreen = app.player.querySelector(`.toggleLarge`);
 
-		toggleScreen.addEventListener(`click`, app.toggleFullscreen);
+		toggleLargeScreen.addEventListener(`click`, app.toggleLargeScreen);
 	},
 
-	toggleFullscreen() {
+	toggleLargeScreen() {
 		if (app.player.style.flex === `1 1 auto`) {
 			app.player.style.flex = ``;
+			app.player.style.height = ``;
+			app.player.style.width = ``;
 			app.player.style.maxWidth = `750px`;
 		} else {
 			app.player.style.flex = `1 1 auto`;
+			window.matchMedia(`(orientation: landscape)`).matches
+				? app.player.style.height = `100%`
+				: app.player.style.width = `100%`;
+			app.player.style.maxWidth = ``;
+		}
+
+		app.toggleLargeScreenButton();
+	},
+
+	toggleLargeScreenButton() {
+		const toggleLargeScreen = app.player.querySelector(`.toggleLarge`);
+
+		const icon = app.player.style.flex === `1 1 auto`
+			? `<i class="fa fa-compress" aria-hidden="true"></i>`
+			: `<i class="fa fa-expand" aria-hidden="true"></i>`;
+
+		toggleLargeScreen.innerHTML = icon;
+	},
+
+	fullscreenListener() {
+		const toggleFullscreen = app.player.querySelector(`.toggleFull`);
+
+		toggleFullscreen.addEventListener(`click`, app.toggleFullscreen);
+	},
+
+	toggleFullscreen() {
+		// app.player.requestFullscreen
+		// && app.player.requestFullscreen();
+		if (app.player.style.flex === `1 1 auto`) {
+			app.player.style.flex = ``;
+			app.player.style.width = ``;
+			app.player.style.maxWidth = `750px`;
+		} else {
+			app.player.style.flex = `1 1 auto`;
+			app.player.style.width = `100%`;
 			app.player.style.maxWidth = ``;
 		}
 
@@ -125,22 +195,24 @@ const app = {
 	},
 
 	toggleFullscreenButton() {
-		const toggleScreen = app.player.querySelector(`.toggleFull`);
+		const toggleFullscreen = app.player.querySelector(`.toggleFull`);
 
 		const icon = app.player.style.flex === `1 1 auto`
 			? `<i class="fa fa-compress" aria-hidden="true"></i>`
 			: `<i class="fa fa-arrows-alt" aria-hidden="true"></i>`;
 
-		toggleScreen.innerHTML = icon;
+		toggleFullscreen.innerHTML = icon;
 	},
 
 	onloadFunction() {
 		app.playListener();
 		app.skipListener();
 		app.rangeListener();
+		app.setRangeVal();
 		app.progressListener();
 		app.scrubListener();
-		app.fullscreenListener();
+		app.largeScreenListener();
+		// app.fullscreenListener();
 	},
 };
 
