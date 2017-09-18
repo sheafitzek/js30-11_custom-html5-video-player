@@ -83,10 +83,27 @@ const app = {
 	updateProgress() {
 		const video = app.player.querySelector(`.viewer`);
 		const progressBar = app.player.querySelector(`.progress__filled`);
+		const progressTime = app.player.querySelector(`.progress__time`);
 
 		const percent = (video.currentTime / video.duration) * 100;
 
 		progressBar.style.flexBasis = `${percent}%`;
+
+		function formatTime(seconds) {
+			const hours = Math.floor(seconds / 3600);
+
+			const minutes = Math.floor((seconds / 60) - (hours * 60)) > 9
+				? Math.floor((seconds / 60) - (hours * 60))
+				: `0${Math.floor((seconds / 60) - (hours * 60))}`;
+
+			seconds = Math.floor(seconds % 60) > 9
+				? Math.floor(seconds % 60)
+				: `0${Math.floor(seconds % 60)}`;
+
+			return `${hours}:${minutes}:${seconds}`;
+		}
+
+		progressTime.innerHTML = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
 	},
 
 	scrubListener() {
