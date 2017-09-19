@@ -174,16 +174,20 @@ const app = {
 	},
 
 	toggleFullscreen() {
-		// app.player.requestFullscreen
-		// && app.player.requestFullscreen();
-		if (app.player.style.flex === `1 1 auto`) {
-			app.player.style.flex = ``;
-			app.player.style.width = ``;
-			app.player.style.maxWidth = `750px`;
+		if (document.webkitFullscreenElement
+			|| document.mozFullscreenElement
+			|| document.msFullscreenElement) {
+			document.webkitExitFullscreen
+				? document.webkitExitFullscreen()
+				: document.mozExitFullscreen
+					? document.mozExitFullscreen()
+					: document.msExitFullscreen();
 		} else {
-			app.player.style.flex = `1 1 auto`;
-			app.player.style.width = `100%`;
-			app.player.style.maxWidth = ``;
+			app.player.webkitRequestFullscreen
+				? app.player.webkitRequestFullscreen()
+				: app.player.mozRequestFullscreen
+					? app.player.mozRequestFullscreen()
+					: app.player.msRequestFullscreen();
 		}
 
 		app.toggleFullscreenButton();
@@ -191,12 +195,51 @@ const app = {
 
 	toggleFullscreenButton() {
 		const toggleFullscreen = app.player.querySelector(`.toggleFull`);
+		let icon;
 
-		const icon = app.player.style.flex === `1 1 auto`
-			? `<i class="fa fa-compress" aria-hidden="true"></i>`
-			: `<i class="fa fa-arrows-alt" aria-hidden="true"></i>`;
+		if (document.webkitFullscreenElement
+					|| document.mozFullscreenElement
+					|| document.msFullscreenElement) {
+			icon = `<i class="fa fa-compress" aria-hidden="true"></i>`;
+		} else {
+			icon = `<i class="fa fa-arrows-alt" aria-hidden="true"></i>`;
+		}
 
 		toggleFullscreen.innerHTML = icon;
+	},
+
+	mouseStop() {
+		function mouseMove() {
+			const controls = document.querySelector(`.player__controls`);
+			const progress = document.querySelector(`.progress`);
+
+			app.player.style.cursor = `auto`;
+			controls.style.transform = `translateY(0)`;
+			progress.style.height = `15px`;
+			progress.style.fontSize = `12px`;
+
+			mouseStopDelay();
+		}
+
+		function mouseStopDelay() {
+			setTimeout(()=> {
+				const controls = document.querySelector(`.player__controls`);
+				const progress = document.querySelector(`.progress`);
+
+				app.player.style.cursor = `none`;
+				controls.style.transform = `translateY(100%) translateY(-5px)`;
+				progress.style.height = `5px`;
+				progress.style.fontSize = `0px`;
+			}, 3000);
+
+			[`mousemove`, `touchmove`].forEach((evt)=> {
+				app.player.addEventListener(evt, mouseMove);
+			});
+		}
+
+		[`mousemove`, `touchmove`].forEach((evt)=> {
+			app.player.addEventListener(evt, mouseStopDelay);
+		});
 	},
 
 	onloadFunction() {
@@ -206,7 +249,8 @@ const app = {
 		app.progressListener();
 		app.scrubListener();
 		app.largeScreenListener();
-		// app.fullscreenListener();
+		app.fullscreenListener();
+		app.mouseStop();
 	},
 };
 
