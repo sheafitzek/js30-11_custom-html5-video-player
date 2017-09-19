@@ -209,37 +209,55 @@ const app = {
 	},
 
 	mouseStop() {
-		function mouseMove() {
-			const controls = document.querySelector(`.player__controls`);
-			const progress = document.querySelector(`.progress`);
+		let timeout;
+		const controls = document.querySelector(`.player__controls`);
+		const progress = document.querySelector(`.progress`);
 
+		function hideControls() {
+			app.player.style.cursor = `none`;
+			controls.style.transform = `translateY(100%) translateY(-5px)`;
+			progress.style.height = `5px`;
+			progress.style.fontSize = `0px`;
+		}
+
+		function showControls() {
 			app.player.style.cursor = `auto`;
 			controls.style.transform = `translateY(0)`;
 			progress.style.height = `15px`;
 			progress.style.fontSize = `12px`;
+		}
+
+		function mouseMove() {
+			showControls();
+
+			clearTimeout(timeout);
 
 			mouseStopDelay();
 		}
 
 		function mouseStopDelay() {
-			setTimeout(()=> {
-				const controls = document.querySelector(`.player__controls`);
-				const progress = document.querySelector(`.progress`);
+			timeout = setTimeout(hideControls, 3000);
 
-				app.player.style.cursor = `none`;
-				controls.style.transform = `translateY(100%) translateY(-5px)`;
-				progress.style.height = `5px`;
-				progress.style.fontSize = `0px`;
-			}, 3000);
+			removeFirstEvent();
 
-			[`mousemove`, `touchmove`].forEach((evt)=> {
-				app.player.addEventListener(evt, mouseMove);
+			[`mousemove`, `touchmove`].forEach((e)=> {
+				app.player.addEventListener(e, mouseMove, {passive: true});
 			});
 		}
 
-		[`mousemove`, `touchmove`].forEach((evt)=> {
-			app.player.addEventListener(evt, mouseStopDelay);
-		});
+		function firstEvent() {
+			[`mousemove`, `touchmove`].forEach((e)=> {
+				app.player.addEventListener(e, mouseStopDelay, {passive: true});
+			});
+		}
+
+		function removeFirstEvent() {
+			[`mousemove`, `touchmove`].forEach((e)=> {
+				app.player.removeEventListener(e, mouseStopDelay, {passive: true});
+			});
+		}
+
+		firstEvent();
 	},
 
 	onloadFunction() {
