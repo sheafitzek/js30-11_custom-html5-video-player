@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+
+	<head>
+
+		<meta charset="utf-8">
+		<title>Custom HTML5 Video Player</title>
+		<meta name="description" content="An HTML5 Video Player with Custom Controls & Styling">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="shortcut icon" type="image/x-icon" href="media/images/favicon.ico"/>
+
+		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Sans+Mono|Share+Tech+Mono">
+
+		<link rel="stylesheet" href="css/index.css">
+
+	</head>
+
+	<body>
+
+		<div class="player">
+
+			<video class="player__video viewer" src="https://player.vimeo.com/external/194837908.sd.mp4?s=c350076905b78c67f74d7ee39fdb4fef01d12420&profile_id=164"></video>
+
+			<div class="player__controls">
+
+				<div class="progress">
+					<div class="title">Big Buck Bunny</div>
+					<div class="progress__filled"></div>
+					<div class="progress__time">0:00:00 / 0:00:00</div>
+				</div>
+
+				<button class="player__button togglePlay" title="Play / Pause"><i class="fa fa-play" aria-hidden="true"></i></button>
+				<input type="range" name="volume" class="player__slider" title="Volume" min="01" max="99" step="1" value="50">
+				<input type="range" name="playbackRate" class="player__slider" title="Rate" min="0.5" max="2.0" step="0.1" value="1.0">
+				<button data-skip="-10" class="player__button" title="Back 10s"><i class="fa fa-backward" aria-hidden="true"></i> 10</button>
+				<button data-skip="25" class="player__button" title="Forward 25s">25 <i class="fa fa-forward" aria-hidden="true"></i></button>
+				<button class="player__button toggleLarge" title="Toggle Large Screen"><i class="fa fa-expand" aria-hidden="true"></i></button>
+				<button class="player__button toggleFull" title="Toggle Fullscreen"><i class="fa fa-arrows-alt" aria-hidden="true"></i></button>
+
+			</div>
+
+		</div>
+
+		<script type="text/javascript" src="js/index.js"></script>
+
+	</body>
+
+</html>
